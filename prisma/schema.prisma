@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://admin:admin123@service-split.cjmeysg46ct0.ap-south-1.rds.amazonaws.com:3306/productList?connection_limit=5"
+}
+
+model Product {
+  id            String      @id @default(uuid())
+  categoryId    String     @map(name: "category_id")
+  name          String
+  companyId     String      @map(name: "company_id")
+  costPrice     Int
+  sellingPrice  Int
+  images        Json        
+  createdAt     DateTime    @default(now())
+  attributes    Json       
+  typeofGoodId  String     @map(name: "typeid")
+}
+
+model Company {
+  company_id    String      @id @default(uuid()) @map(name: "company_id")
+  companyName   String
+  alias         String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Category {
+  category_id   String      @id @default(uuid()) @map(name: "category_id")
+  categoryName  String
+}
+
+model TypeOfGood {
+  typeid        String      @id @default(uuid()) @map(name: "typeid")
+  name          String
+}
