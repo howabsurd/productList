@@ -2,12 +2,14 @@ import { Request, Response } from "express"
 import {prisma} from "../index";
 import { validationResult } from "express-validator";
 import {companyAction} from "../actions/companyAction"
+import { generateUUID } from "../utils/getuuid";
 
 
 export const companyController = {
     createCompany: async (req: Request, res: Response): Promise<Response> => {
         try {
-            await companyAction.createCompanyAction(req);
+            req.body.company_id = generateUUID();
+            await companyAction.createCompanyAction(req,);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 return res.status(400).json(errors);

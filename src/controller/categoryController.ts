@@ -1,7 +1,7 @@
 import { Response, Request } from "express"
 import {prisma} from "../index";
 import { validationResult } from "express-validator";
-
+import {generateUUID} from "../utils/getuuid"
 export const  categoryController = {
     createCategory : async(req :Request , res : Response) : Promise<Response>=>{
         try {
@@ -9,8 +9,8 @@ export const  categoryController = {
         if(!errors.isEmpty()){
             return res.status(400).json({errors : errors.array()})
         }
-            // const {category_id , category_id}  = req.body;
-            const newCategory = await prisma.category.create({data : {...req.body}})
+        
+            const newCategory = await prisma.category.create({data : {...req.body, category_id : generateUUID()}})
             return res.status(200).json({category : newCategory})
         } catch (error) {
             return res.status(500).json({err : error})
@@ -21,6 +21,7 @@ export const  categoryController = {
             const deletedCategory = await prisma.category.delete({where : {category_id : req.params.id}})
             return res.status(200).json({category : deletedCategory, success : `Category deleted succesfully`})
         } catch (error) {
+            if(error?.code === "P2025"){ return res.status(400).json({err : `CategoryID doesnt exist`})}
             return res.status(500).json({err: error})
         }
     },
@@ -34,6 +35,7 @@ export const  categoryController = {
             })
             return res.status(200).json({category: newCategory});
         } catch (error) {
+            if(error?.code === "P2025"){ return res.status(400).json({err : `CategoryID doesnt exist`})}
             return res.status(500).json({err : error})
         }
     },

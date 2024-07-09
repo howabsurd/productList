@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import { prisma } from "../index"
+import { generateUUID } from "../utils/getuuid";
 export const productController = {
     getAllProduct : async(req : Request , res : Response) : Promise <Response> =>{
         try {
@@ -11,6 +12,7 @@ export const productController = {
     },
     createProduct : async(req: Request , res : Response) : Promise<Response>=>{
         try {
+            req.body.company_id = generateUUID()
             const newProduct = await prisma.product.create({data:{
                 ...req.body
             }})
@@ -24,6 +26,7 @@ export const productController = {
             const deletedProduct = await prisma.product.delete({where : {id : req.params.id}})
             return res.status(200).json({product : deletedProduct})
         } catch (error) {
+            if(error?.code === "P2025"){ return res.status(400).json({err : `ProductID doesnt exist`})}
             return res.status(500).json({err : error})
         }
     },
@@ -32,6 +35,7 @@ export const productController = {
             const updatedProduct = await prisma.product.update({where :{id : req.params.id}, data:{...req.body}})
             return res.status(200).json({product : updatedProduct})
         } catch (error) {
+            if(error?.code === "P2025"){ return res.status(400).json({err : `ProductID doesnt exist`})}
             return res.status(500).json({err : error})
         }
     }
