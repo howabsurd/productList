@@ -1,10 +1,17 @@
 import { Response, Request } from "express"
 import { prisma } from "../index"
 import { generateUUID } from "../utils/getuuid"
+import { typeOfGoodAction } from "../actions/typeOfGoodAction";
+import { validationResult } from "express-validator";
 
 export const typeOfGoodController = {
     createGood : async(req: Request , res : Response) : Promise<Response> => {
         try {
+            await typeOfGoodAction.createtypeOfGoodAction(req);
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json(errors);
+            }
             req.body.typeid = generateUUID()
             const newGood = await prisma.typeOfGood.create({data : {
                 ...req.body
@@ -38,6 +45,11 @@ export const typeOfGoodController = {
     },
     updateGood : async (req : Request, res : Response) : Promise<Response> =>{
         try {
+            await typeOfGoodAction.createtypeOfGoodAction(req);
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json(errors);
+            }
             const updateGood = await prisma.typeOfGood.update({
                 where : {
                     typeid : req.params.id

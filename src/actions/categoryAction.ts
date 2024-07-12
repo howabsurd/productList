@@ -1,9 +1,6 @@
 import { prisma } from "..";
 import { Request } from "express";
 
-
-
-
 export const categoryAction = {
     createCategoryAction: async (req: Request) => {
       const existingCategory = await prisma.category.findFirst({

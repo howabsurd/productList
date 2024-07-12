@@ -2,14 +2,15 @@ import { Response, Request } from "express"
 import {prisma} from "../index";
 import { validationResult } from "express-validator";
 import {generateUUID} from "../utils/getuuid"
+import { categoryAction } from "../actions/categoryAction";
 export const  categoryController = {
     createCategory : async(req :Request , res : Response) : Promise<Response>=>{
         try {
             const errors = validationResult(req);
+            await categoryAction.createCategoryAction(req)
         if(!errors.isEmpty()){
             return res.status(400).json({errors : errors.array()})
         }
-        
             const newCategory = await prisma.category.create({data : {...req.body, category_id : generateUUID()}})
             return res.status(200).json({category : newCategory})
         } catch (error) {
@@ -25,8 +26,13 @@ export const  categoryController = {
             return res.status(500).json({err: error})
         }
     },
-    updateCategory : async(req: Request, res: Response) : Promise<Response>=>{
+    updateCategory : async(req: Request, res: Response) : Promise<Response>=>{ 
         try {
+            const errors = validationResult(req);
+            await categoryAction.createCategoryAction(req)
+        if(!errors.isEmpty()){
+            return res.status(400).json({errors : errors.array()})
+        }
             const newCategory = await prisma.category.update({
                 where : {
                     category_id : req.params.id,
