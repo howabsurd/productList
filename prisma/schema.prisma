@@ -17,9 +17,9 @@ model Product {
   companyId     String      @map(name: "company_id")
   costPrice     Int
   sellingPrice  Int
-  images        Json        
-  createdAt     DateTime    @default(now())
-  attributes    Json       
+  images        Json?        
+  createdAt     DateTime?    @default(now())
+  attributes    Json?       
   typeofGoodId  String     @map(name: "typeid")
 }
 
