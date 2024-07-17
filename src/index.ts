@@ -45,3 +45,5 @@ const port = 4700
 app.listen(port, ()=>{
     console.log(`app is listening on port ${port}`);
 })
+
+export default app;
