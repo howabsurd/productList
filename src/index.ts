@@ -11,11 +11,22 @@ app.use((req,res,next)=>{
     console.log(req.method);
     next()
 })
-const corsOptions ={
-    origin:process.env.DEVELOPEMENT_FRONTEND, 
-    credentials:true,       
-    optionSuccessStatus:200
-}
+const allowedOrigins = ['https://product-list-frontend.vercel.app', "http://localhost:3000"];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+};
+
+app.get("/",(req,res)=>{
+    res.status(200).json("Welome to the deployment")
+})
+
 app.use(cors(corsOptions));
 
 // Import Prisma Client
