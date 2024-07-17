@@ -1,6 +1,8 @@
 import express from "express";
 import router from "./router/index"
 import cors from "cors";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 
@@ -9,7 +11,12 @@ app.use((req,res,next)=>{
     console.log(req.method);
     next()
 })
-app.use(cors());
+const corsOptions ={
+    origin:process.env.DEVELOPEMENT_FRONTEND, 
+    credentials:true,       
+    optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
 
 // Import Prisma Client
 import { PrismaClient } from '@prisma/client';

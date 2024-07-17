@@ -47,6 +47,8 @@ export const  categoryController = {
     },
     getAllCategory : async(req: Request , res: Response) : Promise<Response> =>{
         try {
+            // @ts-ignore
+            console.log(req.headers.cookie)
             const categories = await prisma.category.findMany();
             return res.status(200).json({category : categories})
         } catch (error) {
