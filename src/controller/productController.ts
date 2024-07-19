@@ -8,14 +8,14 @@ export const productController = {
             const products = await  prisma.product.findMany();
             return res.status(200).json({product: products})
         } catch (error) {
-            return res.status(500).json({err : error})
+            return res.status(500).json({err : error.message})
         }  
     },
     createProduct : async(req: Request , res : Response) : Promise<Response>=>{
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json(errors);
+                return res.status(400).json({err : errors.array()[0].msg})
             }
             req.body.id = generateUUID()
             const newProduct = await prisma.product.create({data:{
@@ -23,7 +23,7 @@ export const productController = {
             }})
             return res.status(200).json({product : newProduct})
         } catch (error) {
-            return res.status(500).json({err : error})
+            return res.status(500).json({err : error.message})
         }
     },
     deleteProduct : async(req : Request , res : Response) : Promise<Response>=>{
@@ -32,20 +32,20 @@ export const productController = {
             return res.status(200).json({product : deletedProduct})
         } catch (error) {
             if(error?.code === "P2025"){ return res.status(400).json({err : `ProductID doesnt exist`})}
-            return res.status(500).json({err : error})
+            return res.status(500).json({err : error.message})
         }
     },
     updateProduct : async (req : Request , res : Response) : Promise<Response> =>{
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json(errors);
+                return res.status(400).json({err : errors.array()[0].msg})
             }
             const updatedProduct = await prisma.product.update({where :{id : req.params.id}, data:{...req.body}})
             return res.status(200).json({product : updatedProduct})
         } catch (error) {
             if(error?.code === "P2025"){ return res.status(400).json({err : `ProductID doesnt exist`})}
-            return res.status(500).json({err : error})
+            return res.status(500).json({err : error.message})
         }
     }
 }

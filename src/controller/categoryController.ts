@@ -9,12 +9,12 @@ export const  categoryController = {
             const errors = validationResult(req);
             await categoryAction.createCategoryAction(req)
         if(!errors.isEmpty()){
-            return res.status(400).json({errors : errors.array()})
+            return res.status(400).json({err : errors.array()[0].msg})
         }
             const newCategory = await prisma.category.create({data : {...req.body, category_id : generateUUID()}})
             return res.status(200).json({category : newCategory})
         } catch (error) {
-            return res.status(500).json({err : error})
+            return res.status(500).json({err : error.message})
         }
     },
     deleteCategory : async (req : Request , res: Response) : Promise<Response> =>{
@@ -23,7 +23,7 @@ export const  categoryController = {
             return res.status(200).json({category : deletedCategory, success : `Category deleted succesfully`})
         } catch (error) {
             if(error?.code === "P2025"){ return res.status(400).json({err : `CategoryID doesnt exist`})}
-            return res.status(500).json({err: error})
+            return res.status(500).json({err: error.message})
         }
     },
     updateCategory : async(req: Request, res: Response) : Promise<Response>=>{ 
@@ -31,7 +31,7 @@ export const  categoryController = {
             const errors = validationResult(req);
             await categoryAction.createCategoryAction(req)
         if(!errors.isEmpty()){
-            return res.status(400).json({errors : errors.array()})
+            return res.status(400).json({err : errors.array()[0].msg})
         }
             const newCategory = await prisma.category.update({
                 where : {
@@ -42,17 +42,15 @@ export const  categoryController = {
             return res.status(200).json({category: newCategory});
         } catch (error) {
             if(error?.code === "P2025"){ return res.status(400).json({err : `CategoryID doesnt exist`})}
-            return res.status(500).json({err : error})
+            return res.status(500).json({err : error.message})
         }
     },
     getAllCategory : async(req: Request , res: Response) : Promise<Response> =>{
         try {
-            // @ts-ignore
-            console.log(req.headers.cookie)
             const categories = await prisma.category.findMany();
             return res.status(200).json({category : categories})
         } catch (error) {
-            return res.status(500).json({err : error});
+            return res.status(500).json({err : error.message});
         }
     }
 } 

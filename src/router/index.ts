@@ -11,7 +11,7 @@ import { createProductValidator, updateProductValidator } from "../validators/pr
 
 const router : Router = express.Router();
 
-// create a compnay
+// create a company
 router.post("/company/new", createCompanyValidator ,companyController.createCompany);
 // update a company
 router.put("/company/:id", updateCompanyValidator,companyController.updateCompany)

@@ -10,7 +10,7 @@ export const typeOfGoodController = {
             await typeOfGoodAction.createtypeOfGoodAction(req);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json(errors);
+                return res.status(400).json({err : errors.array()[0].msg})
             }
             req.body.typeid = generateUUID()
             const newGood = await prisma.typeOfGood.create({data : {
@@ -18,7 +18,7 @@ export const typeOfGoodController = {
             }})
             return res.status(200).json({good : newGood});
         } catch (error) {
-            return res.status(500).json({err : error})
+            return res.status(500).json({err : error.message})
         }
     },
     deleteGood : async (req : Request,res : Response) : Promise<Response> => {
@@ -31,7 +31,7 @@ export const typeOfGoodController = {
             return res.status(200).json({typeOfGood : deletedGood, success : `Above good deleted`})
         } catch (error) {
             if(error?.code === "P2025"){ return res.status(400).json({err : `TypeOfGoodID doesnt exist`})}
-            return res.status(500).json({err : error})
+            return res.status(500).json({err : error.message})
         }
     },
     getAllGood : async(req : Request , res : Response) : Promise<Response> =>{
@@ -39,7 +39,7 @@ export const typeOfGoodController = {
             const allGoods = await prisma.typeOfGood.findMany();
         return res.status(200).json({good : allGoods})
         } catch (error) {
-            return res.status(500).json({err : error})
+            return res.status(500).json({err : error.message})
         }
         
     },
@@ -48,7 +48,7 @@ export const typeOfGoodController = {
             await typeOfGoodAction.createtypeOfGoodAction(req);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json(errors);
+                return res.status(400).json({err : errors.array()[0].msg})
             }
             const updateGood = await prisma.typeOfGood.update({
                 where : {
@@ -61,7 +61,7 @@ export const typeOfGoodController = {
             return res.status(200).json({good : updateGood})
         } catch (error) {
             if(error?.code === "P2025"){ return res.status(400).json({err : `TypeOfGoodID doesnt exist`})}
-            return res.status(500).json({err : error});
+            return res.status(500).json({err : error.message});
         }
     }
 }

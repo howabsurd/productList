@@ -12,7 +12,7 @@ export const companyController = {
             await companyAction.createCompanyAction(req);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json(errors);
+                return res.status(400).json({err : errors.array()[0].msg})
             }
     
             const { company_id, companyName, alias } = req.body;
@@ -28,7 +28,7 @@ export const companyController = {
     
             return res.status(200).json(newCompany);
         } catch (error) {
-            return res.status(500).json({ error: error.message });
+            return res.status(500).json({ err : error.message });
         }
 
     },
@@ -37,7 +37,7 @@ export const companyController = {
             const companies = await prisma.company.findMany();
             return res.status(200).json({company : companies})
         } catch (error) {
-            return res.status(500).json({err : error})
+            return res.status(500).json({err : error.message})
         }
     },
     deleteCompany : async(req :Request, res: Response) :Promise<Response> =>{
@@ -49,7 +49,6 @@ export const companyController = {
             })
             return res.status(200).json({company : deleteCompany, success : "deleted above record"})
         } catch (error) {
-            console.log(error?.code);
             if(error?.code === "P2025"){ return res.status(400).json({err : `Company ID doesnt exiist`})}
             return res.status(500).json({err : error})
         }
@@ -59,7 +58,7 @@ export const companyController = {
             await companyAction.updateCompanyAction(req);
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return res.status(400).json(errors);
+                return res.status(400).json({err : errors.array()[0].msg})
             }
             const data = {
                 companyName : req.body.companyName,
@@ -75,7 +74,7 @@ export const companyController = {
             return res.status(200).json({company : newCompany})
         } catch (error) {
             if(error?.code === "P2025"){ return res.status(400).json({err : `Company ID doesnt exiist`})}
-            return res.status(500).json({err : error})
+            return res.status(500).json({err : error.message})
         }
     }
 }
